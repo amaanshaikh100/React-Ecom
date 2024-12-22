@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding: 30px 60px;
+}
+
+/* UTILITIES */
+.mt-small {
+  margin-top: 20px;
+}
+
+/* TYPOGRAPHY */
+.headings {
+  font-size: 28px;
+  font-weight: 400;
+}
+
+/* NAV */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1a86f3;
+  text-transform: uppercase;
+}
+
+.navbar form {
+  flex-basis: 50%;
+}
+
+.navbar form input {
+  width: 100%;
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+/* APP LAYOUT */
+.app-layout {
+  display: flex;
+  justify-content: space-between;
+  height: 80vh;
+}
+
+.app-layout div {
+  padding: 20px;
+}
+
+.filter {
+  flex-basis: 15%;
+  background-color: #eee;
+}
+
+.product {
+  flex-basis: 55%;
+  background-color: #f3f2f2;
+  overflow: scroll;
+}
+
+.cart {
+  flex-basis: 25%;
+  background-color: #949494;
+}
+
+.add-btn {
+  font-size: 16px;
+  background-color: #34506c;
+  display: inline-block;
+  padding: 8px 30px;
+  color: #fff;
+  border-radius: 100px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* PRODUCT */
+.product-list-container {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.product-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 200px;
+  gap: 10px;
+  height: 250px;
+  background-color: #fff;
+  border-radius: 12px;
+}
+
+.product-heading {
+  font-size: 18px;
+}
+
+.product-price {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.product-desc {
+  font-size: 16px;
+}
