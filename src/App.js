@@ -47,18 +47,28 @@ const initialProducts = [
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
 
   useEffect(function () {
     setProducts([...initialProducts]);
   }, []);
 
-  // console.log(products);
+  // Function Handlers
+  function handleCart(product) {
+    setCart((c) => [...c, product]);
+    // don't do cart.push
+    // cart.push(product);
+  }
 
   return (
     <>
       <Navbar />
       <div className="mt-small">
-        <PageLayout products={products} />
+        <PageLayout
+          products={products}
+          cart={cart}
+          onHandleCartProduct={handleCart}
+        />
       </div>
     </>
   );
@@ -73,47 +83,84 @@ function Navbar() {
   );
 }
 
-function PageLayout({ products }) {
+function PageLayout({ products, cart, onHandleCartProduct }) {
+  const [val, setVal] = useState(250);
+
+  function onHandleRange(e) {
+    setVal(e.target.value);
+  }
+
   return (
     <div className="app-layout">
-      <Filter />
-      <Product products={products} />
-      <Cart />
+      <Filter val={val} onHandleRange={onHandleRange} />
+      <Product
+        products={products}
+        onHandleCartProduct={onHandleCartProduct}
+        filteredPrice={val}
+      />
+      <Cart cart={cart} />
     </div>
   );
 }
 
-function Filter() {
+function Filter({ val, onHandleRange }) {
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(250);
+
   return (
     <div className="filter">
       <Headings>Filter</Headings>
+
+      <form onSubmit={(e) => e.preventDefault()}>
+        <div className="range">
+          <label htmlFor="range">{`Price < than: ${val}`}</label>
+          <input
+            type="range"
+            onChange={(e) => onHandleRange(e)}
+            id="range"
+            min={min}
+            max={max}
+            value={val}
+          />
+        </div>
+      </form>
     </div>
   );
 }
 
-function Product({ products }) {
+function Product({ products, onHandleCartProduct, filteredPrice }) {
+  const filteredProducts = products.filter((p) => {
+    return p.price < filteredPrice;
+  });
+
   return (
     <div className="product">
       <Headings>Products</Headings>
-      <ProductContainer products={products} />
-      {/* <AddButton /> */}
+      <ProductContainer
+        products={filteredProducts}
+        onHandleCartProduct={onHandleCartProduct}
+      />
     </div>
   );
 }
 
-function ProductContainer({ products }) {
+function ProductContainer({ products, onHandleCartProduct }) {
   return (
     <ul className="product-list-container mt-small">
       {products.map((product, i) => {
-        return <ProductList product={product} key={i} />;
+        return (
+          <ProductList
+            product={product}
+            onHandleCartProduct={onHandleCartProduct}
+            key={i}
+          />
+        );
       })}
     </ul>
   );
 }
 
-function ProductList({ product }) {
-  console.log(product);
-
+function ProductList({ product, onHandleCartProduct }) {
   return (
     <li className="product-list">
       <div className="product-container">
@@ -122,22 +169,90 @@ function ProductList({ product }) {
         <span className="product-price">Price: ${product.price}</span>
         <p className="product-desc">{product.description}</p>
 
-        <AddButton />
+        <AddButton
+          product={product}
+          onHandleCartProduct={onHandleCartProduct}
+        />
       </div>
     </li>
   );
 }
 
-function AddButton() {
-  return <button className="add-btn">Add to cart</button>;
+function AddButton({ product, onHandleCartProduct }) {
+  function handleCartProduct() {
+    onHandleCartProduct(product);
+  }
+
+  return (
+    <button onClick={handleCartProduct} className="add-btn">
+      Add to cart
+    </button>
+  );
 }
 
-function Cart() {
+function Cart({ cart }) {
   return (
     <div className="cart">
       <Headings>Cart</Headings>
+      <ProductCart cart={cart} />
+      <ProductInfo cart={cart} />
     </div>
   );
+}
+
+function ProductCart({ cart }) {
+  return (
+    <ul className="cart-container mt-small">
+      {cart.length > 0 ? (
+        cart.map((item, i) => {
+          return <ProductCartList item={item} key={i} />;
+        })
+      ) : (
+        <Message>Your cart is empty.</Message>
+      )}
+    </ul>
+  );
+}
+
+function ProductCartList({ item }) {
+  return (
+    <li className="cart-list">
+      <div>
+        <h3>{item.heading}</h3>
+        <p>{item.description}</p>
+        <span>Price ${item.price}</span>
+      </div>
+    </li>
+  );
+}
+
+function ProductInfo({ cart }) {
+  const totalCost = cart.reduce(function (acc, p) {
+    return acc + p.price;
+  }, 0);
+  const formattedCost = totalCost.toFixed(2);
+  const productQuantity = cart.length;
+
+  return (
+    <div className="product-details">
+      <h3>
+        Total: <span>${formattedCost}</span>
+      </h3>
+      <h3>
+        Product Quantity: <span>{productQuantity}</span>
+      </h3>
+
+      <Order />
+    </div>
+  );
+}
+
+function Order() {
+  return <button className="order-btn mt-small">Order Now</button>;
+}
+
+function Message({ children }) {
+  return <p className="message">{children}</p>;
 }
 
 function Headings({ children }) {
