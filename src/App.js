@@ -65,6 +65,7 @@ function App() {
       <Navbar />
       <div className="mt-small">
         <PageLayout
+          setProducts={setProducts}
           products={products}
           cart={cart}
           onHandleCartProduct={handleCart}
@@ -83,16 +84,32 @@ function Navbar() {
   );
 }
 
-function PageLayout({ products, cart, onHandleCartProduct }) {
+function PageLayout({ products, setProducts, cart, onHandleCartProduct }) {
   const [val, setVal] = useState(250);
 
-  function onHandleRange(e) {
+  function handleRange(e) {
     setVal(e.target.value);
+  }
+
+  function handleSortLow() {
+    const sortedProducts = [...products].sort((a, b) => a.price - b.price);
+    setProducts(sortedProducts);
+  }
+
+  function handleSortHigh() {
+    const sortedProducts = [...products].sort((a, b) => b.price - a.price);
+    setProducts(sortedProducts);
   }
 
   return (
     <div className="app-layout">
-      <Filter val={val} onHandleRange={onHandleRange} />
+      <Filter
+        val={val}
+        onHandleRange={handleRange}
+        products={products}
+        onHandleSortLow={handleSortLow}
+        onHandleSortHigh={handleSortHigh}
+      />
       <Product
         products={products}
         onHandleCartProduct={onHandleCartProduct}
@@ -103,7 +120,13 @@ function PageLayout({ products, cart, onHandleCartProduct }) {
   );
 }
 
-function Filter({ val, onHandleRange }) {
+function Filter({
+  val,
+  onHandleRange,
+  onHandleSortLow,
+  onHandleSortHigh,
+  products,
+}) {
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(250);
 
@@ -124,6 +147,31 @@ function Filter({ val, onHandleRange }) {
           />
         </div>
       </form>
+
+      <SortProductPrice
+        products={products}
+        onHandleSortHigh={onHandleSortHigh}
+        onHandleSortLow={onHandleSortLow}
+      />
+    </div>
+  );
+}
+
+function SortProductPrice({ products, onHandleSortLow, onHandleSortHigh }) {
+  function handleLow() {
+    onHandleSortLow();
+  }
+
+  function handleHigh() {
+    onHandleSortHigh();
+  }
+
+  return (
+    <div>
+      <h3>Sort</h3>
+
+      <button onClick={handleLow}>Price - low to high</button>
+      <button onClick={handleHigh}>Price - high to low</button>
     </div>
   );
 }
