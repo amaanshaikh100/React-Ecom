@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 
 const initialProducts = [
   {
@@ -75,14 +75,14 @@ function App() {
   );
 }
 
-function Navbar() {
+const Navbar = memo(function Navbar() {
   return (
     <div className="navbar">
       <Logo />
       <Search />
     </div>
   );
-}
+});
 
 function PageLayout({ products, setProducts, cart, onHandleCartProduct }) {
   const [val, setVal] = useState(250);
@@ -157,7 +157,11 @@ function Filter({
   );
 }
 
-function SortProductPrice({ products, onHandleSortLow, onHandleSortHigh }) {
+const SortProductPrice = memo(function ({
+  products,
+  onHandleSortLow,
+  onHandleSortHigh,
+}) {
   function handleLow() {
     onHandleSortLow();
   }
@@ -170,13 +174,21 @@ function SortProductPrice({ products, onHandleSortLow, onHandleSortHigh }) {
     <div>
       <h3>Sort</h3>
 
-      <button onClick={handleLow}>Price - low to high</button>
-      <button onClick={handleHigh}>Price - high to low</button>
+      <button className="btn-sort mt-small" onClick={handleLow}>
+        Price - low to high
+      </button>
+      <button className="btn-sort mt-small" onClick={handleHigh}>
+        Price - high to low
+      </button>
     </div>
   );
-}
+});
 
-function Product({ products, onHandleCartProduct, filteredPrice }) {
+const Product = memo(function Product({
+  products,
+  onHandleCartProduct,
+  filteredPrice,
+}) {
   const filteredProducts = products.filter((p) => {
     return p.price < filteredPrice;
   });
@@ -190,7 +202,7 @@ function Product({ products, onHandleCartProduct, filteredPrice }) {
       />
     </div>
   );
-}
+});
 
 function ProductContainer({ products, onHandleCartProduct }) {
   return (
@@ -238,7 +250,7 @@ function AddButton({ product, onHandleCartProduct }) {
   );
 }
 
-function Cart({ cart }) {
+const Cart = memo(function ({ cart }) {
   return (
     <div className="cart">
       <Headings>Cart</Headings>
@@ -246,7 +258,7 @@ function Cart({ cart }) {
       <ProductInfo cart={cart} />
     </div>
   );
-}
+});
 
 function ProductCart({ cart }) {
   return (
